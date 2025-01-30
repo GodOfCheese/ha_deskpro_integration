@@ -30,34 +30,55 @@ def setup_platform(
         username=config[CONF_USERNAME],
         password=config[CONF_PASSWORD],
     )
+
+    dpx = DeskproXMLSensor( dp= dp)
     add_entities(
         [
-            DeskproTemperature(dp),
-            AmbientNoiseLevel(dp),
-            CurrentSoundLevel(dp),
-            # RoomInUse(dp),
-            # AlarmDetected(dp),
-            PeopleCount(dp),
-            Humidity(dp),
+            dpx,
+            DeskproTemperature(dpx),
+            AmbientNoiseLevel(dpx),
+            CurrentSoundLevel(dpx),
+            # RoomInUse(dpx),
+            # AlarmDetected(dpx),
+            PeopleCount(dpx),
+            Humidity(dpx),
         ]
     )
 
+#
+# BUGBUG: how do I configure this from the UI?
+# different deployments will have different tolerances.
+#
+SCAN_INTERVAL = timedelta(seconds=5)
 
-SCAN_INTERVAL = timedelta(seconds=30)
-
-
-class DeskproSensor(SensorEntity):
+class DeskproXMLSensor( SensorEntity ):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_should_poll = True
 
-    def __init__(self, dp: Deskpro, key):
+    def __init__(self, dp: Deskpro ):
+        self.dp = dp
+        return
+
+    def update(self) -> None:
+        self.dp.update()
+        self._attr_native_value = 0
+
+    def get(self, key ) -> Optional[str]:
+        return self.dp.status[key]
+
+    pass
+
+class DeskproSensor(SensorEntity):
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = False
+
+    def __init__(self, dp: DeskproXMLSensor, key):
         self.dp = dp
         self.key = key
         return
 
     def update(self) -> None:
-        self.dp.update()
-        self._attr_native_value = self.dp.status[self.key]
+        self._attr_native_value = self.dp.get( self.key )
 
     pass
 
@@ -68,7 +89,7 @@ class AudioLevel(DeskproSensor):
     _attr_native_unit_of_measurement = UnitOfSoundPressure.DECIBEL
     _attr_device_class = SensorDeviceClass.SOUND_PRESSURE
 
-    def __init__(self, dp: Deskpro, key):
+    def __init__(self, dp: DeskproXMLSensor, key):
         super().__init__(dp, key)
 
 
@@ -76,7 +97,7 @@ class AmbientNoiseLevel(AudioLevel):
     _attr_name = "Deskpro Ambient Noise Level"
     _attr_unique_id = "DeskproAmbientNoiseLevel"
 
-    def __init__(self, dp: Deskpro):
+    def __init__(self, dp: DeskproXMLSensor):
         super().__init__(dp, "AmbientNoiseLevel")
         return
 
@@ -87,7 +108,7 @@ class CurrentSoundLevel(AudioLevel):
     _attr_name = "Deskpro level of noise in the room now"
     _attr_unique_id = "DeskproSoundLevel"
 
-    def __init__(self, dp: Deskpro):
+    def __init__(self, dp: DeskproXMLSensor):
         super().__init__(dp, "SoundLevel")
         return
 
@@ -102,7 +123,7 @@ class DeskproTemperature(DeskproSensor):
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_unique_id = "0xdeadbeef"
 
-    def __init__(self, dp: Deskpro):
+    def __init__(self, dp: DeskproXMLSensor):
         super().__init__(dp, "AmbientTemperature")
         return
 
@@ -111,7 +132,7 @@ class PeopleCount(DeskproSensor):
     _attr_name = "Deskpro people count"
     _attr_unique_id = "peoplecountzzzz"
 
-    def __init__(self, dp: Deskpro):
+    def __init__(self, dp: DeskproXMLSensor):
         super().__init__(dp, "PeopleCount")
         return
 
