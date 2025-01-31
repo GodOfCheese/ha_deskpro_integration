@@ -3,7 +3,7 @@
 from __future__ import annotations
 from datetime import timedelta
 
-from deskpro import Deskpro 
+from .deskpro import Deskpro 
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,

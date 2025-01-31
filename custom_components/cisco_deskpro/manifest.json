@@ -8,7 +8,7 @@
         "requests"
     ],
     "codeowners": [ "@GodOfCheese"],
-    "dependencies": [ "requests"],
+    "dependencies": [ ],
     "documentation": "https://github.com/GodOfCheese/ha_deskpro_integration",
     "integration_type": "hub"
   }
