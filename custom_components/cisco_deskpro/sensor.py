@@ -70,7 +70,7 @@ class DeskproXMLSensor( SensorEntity ):
 
 class DeskproSensor(SensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
-    _attr_should_poll = False
+    _attr_should_poll = True
 
     def __init__(self, dp: DeskproXMLSensor, key):
         self.dp = dp
