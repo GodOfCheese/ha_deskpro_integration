@@ -3,10 +3,12 @@
     "name": "Cisco Deskpro",
     "version": "0.1.0",
     "iot_class": "local_polling",
+    "issue_tracker": "https://github.com/GodOfCheese/ha_deskpro_integration/issues",
     "requirements": [
+        "requests"
     ],
-    "codeowners": [],
-    "dependencies": [],
+    "codeowners": [ "@GodOfCheese"],
+    "dependencies": [ "requests"],
     "documentation": "https://github.com/GodOfCheese/ha_deskpro_integration",
     "integration_type": "hub"
   }
