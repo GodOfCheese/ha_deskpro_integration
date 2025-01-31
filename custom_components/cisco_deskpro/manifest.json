@@ -4,7 +4,6 @@
     "version": "0.1.0",
     "iot_class": "local_polling",
     "requirements": [
-        "deskpro@git+https://github.com/GodOfCheese/deskpro.git@poc"
     ],
     "codeowners": [],
     "dependencies": [],
