@@ -10,6 +10,9 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
+
+from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.components.binary_sensor import DEVICE_CLASS_OCCUPANCY
 from homeassistant.const import UnitOfTemperature, UnitOfSoundPressure
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -38,7 +41,7 @@ def setup_platform(
             DeskproTemperature(dpx),
             AmbientNoiseLevel(dpx),
             CurrentSoundLevel(dpx),
-            # RoomInUse(dpx),
+            RoomInUse(dpx),
             # AlarmDetected(dpx),
             PeopleCount(dpx),
             Humidity(dpx),
@@ -139,14 +142,27 @@ class PeopleCount(DeskproSensor):
     pass
 
 
-class RoomInUse(DeskproSensor):
+class RoomInUse(BinarySensorEntity):
     _attr_name = "Deskpro in use"
     _attr_unique_id = "dpinuse"
 
     def __init__(self, dp: Deskpro):
-        super().__init__(dp, "RoomInUse")
-        return
 
+        self.dp = dp
+        self._name = "Deskpro in use"
+        return
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def is_on(self):
+        return self.dp.status["RoomInUse"] == "true"
+    
+    def update(self):
+        self.dp.update()
+        return
     pass
 
 
