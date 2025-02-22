@@ -145,6 +145,9 @@ class PeopleCount(DeskproSensor):
 class RoomInUse(BinarySensorEntity):
     _attr_name = "Deskpro in use"
     _attr_unique_id = "dpinuse"
+    _attr_state_class = SensorStateClass.OCCUPANCY
+    _attr_device_class = DEVICE_CLASS_OCCUPANCY
+    _attr_should_poll = False
 
     def __init__(self, dp: Deskpro):
 
@@ -161,7 +164,7 @@ class RoomInUse(BinarySensorEntity):
         return self.dp.status["RoomInUse"] == "true"
     
     def update(self):
-        self.dp.update()
+        # do nothing.
         return
     pass
 
