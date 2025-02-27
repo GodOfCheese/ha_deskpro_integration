@@ -32,6 +32,7 @@ I'm sure there's documentation on cisco's site on how to do this.  I'll link to 
 1. give the new user a strong password, since only automation is going to use it.
 1. UNCHECK the default option to require the user change their password on first login.
 1. SAVE the credentials.  You'll need them in the next step.
+2. go into Settings and configure the Deskpro to actually use the sensors you care about.  Important: The deskpro integration can't currently tell the difference between "sensor is not enabled" and "sensor didn't detect anything".
 
 ### configuration.yaml
 Add the following to your HomeAssistant's `configuration.yaml`:
@@ -50,10 +51,12 @@ This integration provides the following `sensor` entities, which update about on
 * `deskpro_humidity`: the relative humidity
 * `deskpro_ambient_noise_level`: the level of background noise in the room estimated by the device in decibels.  TL;DR: this is how noisy the room is *on average*
 * `deskpro_level_of_noise_in_the_room_now`: the 'current' noise level, in decibels. For a good time, scream at your deskpro and watch the number change.
-* `deskpro_people_count`: how many people the unit can detect in the room using whatever algorithms you've enabled.
+* `deskpro_people_count`: how many people the unit can detect in the room using whatever algorithms you've enabled (ultrasonic, face-detect, WebEx proximity, etc). Depending on your configuration, your Deskpro may only count people when it's awake.  If the device can't provide Presence Detection because it's gone to sleep, this is set to -1.
 * `deskpro_temperature`: the temperature in the room, as measured by the device.
+* `deskpro_in_use`: the device is in use.  This is different from people-detection. If a computer is displaying content on the Deskpro, it's `in use`, whether anyone can see it or not.  Note that if the deskpro is not `in use`, it might go to sleep and cease to detect people even if they're there.
+* `deskpro_t3_alarm_detected`: this goes to `True` if the device detects a T3 Fire Alarm signal. 
 
-There is a phantom `unnamed device` sensor that the integration also creates, which is always `0`. This is part of the update process and you should leave it alone until I can get rid of it.
+There is also a phantom `unnamed device` sensor that the integration also creates, which is always `0`. This is part of the update process and you should leave it alone until I can implement this using the HA-approved framework.
 
 ## Limitations
 ### Manual Configuration
