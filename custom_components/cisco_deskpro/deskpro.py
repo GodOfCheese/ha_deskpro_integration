@@ -138,3 +138,6 @@ class Deskpro:
         # for now we just pull the statii into a status dict.
         # 
         self.status = Deskpro.Statii.ToStatus(xml)
+        return
+    pass
+
